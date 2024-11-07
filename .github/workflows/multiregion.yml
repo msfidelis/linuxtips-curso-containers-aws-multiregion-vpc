@@ -43,3 +43,39 @@ jobs:
                 AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID  }}
                 AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY  }}
                 AWS_REGION: "us-east-1"
+
+
+    ci-terraform-post-deployment:
+        runs-on:  ubuntu-latest
+        steps:
+            - name: checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+              with:
+                terraform_version: "1.5.7"
+
+            - name: Tree Repository
+              run: tree .
+              working-directory: ./post-deployment
+
+            - name: Terraform Format Check
+              run: terraform fmt --recursive --check
+              working-directory: ./post-deployment
+              
+            - name: Terraform Init
+              run: terraform init -backend-config=environment/backend.tfvars
+              working-directory: ./post-deployment
+              env:
+                AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID  }}
+                AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY  }}
+                AWS_REGION: "us-east-1"
+
+            - name: Terraform Validate
+              run: terraform validate
+              working-directory: ./post-deployment
+              env:
+                AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID  }}
+                AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY  }}
+                AWS_REGION: "us-east-1"
