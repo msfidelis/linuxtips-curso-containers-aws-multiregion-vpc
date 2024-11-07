@@ -22,7 +22,7 @@ jobs:
 
             - name: Tree Repository
               run: tree .
-              working-directory: ./pre-deployment.
+              working-directory: ./pre-deployment
 
             - name: Terraform Format Check
               run: terraform fmt --recursive --check
