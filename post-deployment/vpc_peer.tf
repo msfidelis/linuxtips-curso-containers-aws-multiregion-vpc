@@ -13,9 +13,9 @@ resource "aws_vpc_peering_connection" "peer" {
 }
 
 resource "aws_vpc_peering_connection_accepter" "peer" {
-  provider = aws.peer
+  provider                  = aws.peer
   vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
-  auto_accept = true
+  auto_accept               = true
 
   tags = {
     Side = "Accepter"
@@ -23,31 +23,31 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
 }
 
 resource "aws_vpc_peering_connection_options" "requester" {
-    vpc_peering_connection_id = aws_vpc_peering_connection_accepter.peer.id
+  vpc_peering_connection_id = aws_vpc_peering_connection_accepter.peer.id
 
-    requester {
-      allow_remote_vpc_dns_resolution = true
-    }
+  requester {
+    allow_remote_vpc_dns_resolution = true
+  }
 
-    depends_on = [ 
-        aws_vpc_peering_connection.peer,
-        aws_vpc_peering_connection_accepter.peer
-     ]
+  depends_on = [
+    aws_vpc_peering_connection.peer,
+    aws_vpc_peering_connection_accepter.peer
+  ]
 }
 
 
 resource "aws_vpc_peering_connection_options" "accepter" {
 
-    provider = aws.peer
+  provider = aws.peer
 
-    vpc_peering_connection_id = aws_vpc_peering_connection_accepter.peer.id
+  vpc_peering_connection_id = aws_vpc_peering_connection_accepter.peer.id
 
-    accepter {
-      allow_remote_vpc_dns_resolution = true
-    }
+  accepter {
+    allow_remote_vpc_dns_resolution = true
+  }
 
-    depends_on = [ 
-        aws_vpc_peering_connection.peer,
-        aws_vpc_peering_connection_accepter.peer
-     ]
+  depends_on = [
+    aws_vpc_peering_connection.peer,
+    aws_vpc_peering_connection_accepter.peer
+  ]
 }
